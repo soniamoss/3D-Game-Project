@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 33000010880762378}
   - component: {fileID: 23000010805083178}
   - component: {fileID: 65000010772889064}
-  m_Layer: 8
+  m_Layer: 6
   m_Name: rightDoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -118,7 +118,7 @@ GameObject:
   - component: {fileID: 95000010184680226}
   - component: {fileID: 114000012293516212}
   - component: {fileID: 114000012803999884}
-  m_Layer: 8
+  m_Layer: 6
   m_Name: PFB_DoorDouble
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -221,7 +221,7 @@ GameObject:
   - component: {fileID: 33000013169868940}
   - component: {fileID: 23000011490620920}
   - component: {fileID: 65000011612511682}
-  m_Layer: 8
+  m_Layer: 6
   m_Name: leftDoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -323,7 +323,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4000010238480538}
-  m_Layer: 8
+  m_Layer: 6
   m_Name: DoorDouble
   m_TagString: Untagged
   m_Icon: {fileID: 0}
