@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/FurnishedCabin/Scenes/MainMenu.unity
+    guid: 3a80b160f8f27ac4e9f995245610d787
+  - enabled: 1
+    path: Assets/FurnishedCabin/Scenes/Demo.unity
+    guid: 0bce5907d797a4cd8b0660dc119867e8
   m_configObjects: {}
