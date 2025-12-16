@@ -5280,7 +5280,7 @@ GameObject:
   - component: {fileID: 33000012405522688}
   - component: {fileID: 23000011623582228}
   - component: {fileID: 64000010243441250}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PFB_Building_Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}

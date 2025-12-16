@@ -11,6 +11,18 @@ public class PlayerMovementWithClimb : MonoBehaviour
     public float wallCheckDistance = 1f;
     public LayerMask climbableLayer;
 
+    [Header("Jumping")]
+    public float jumpForce = 7f;
+    public float groundCheckDistance = 0.2f;
+    public LayerMask groundLayer;
+    private bool isGrounded;
+
+    [Header("Wall Jump")]
+    public float wallJumpUpForce = 7f;
+    public float wallJumpPushForce = 5f;
+
+
+
     [Header("Camera")]
     public Transform mainCamera;
 
@@ -28,18 +40,21 @@ public class PlayerMovementWithClimb : MonoBehaviour
     {
         GetMovementInput();
 
-        // climbing on wall
         if (isClimbing)
         {
             ClimbUpdate();
+            WallJumpCheck();
         }
-        // moving on flat ground
         else
         {
+            CheckGround();
             GroundMoveUpdate();
             DetectWallForClimbing();
+            JumpUpdate();
         }
     }
+
+
 
     // player movement, relative to which way the camera is facing
     void GetMovementInput()
@@ -67,13 +82,16 @@ public class PlayerMovementWithClimb : MonoBehaviour
 
     void GroundMoveUpdate()
     {
+        Vector3 horizontalVelocity = moveDir * moveSpeed;
+        rb.velocity = new Vector3(
+            horizontalVelocity.x,
+            rb.velocity.y,
+            horizontalVelocity.z
+        );
+
         if (moveDir.magnitude > 0.1f)
         {
-            rb.MovePosition(transform.position + moveDir * moveSpeed * Time.deltaTime);
-
-            // Rotate player to movement direction
             Quaternion targetRot = Quaternion.LookRotation(moveDir);
-
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,
                 targetRot,
@@ -81,6 +99,7 @@ public class PlayerMovementWithClimb : MonoBehaviour
             );
         }
     }
+
 
     void DetectWallForClimbing()
     {
@@ -134,4 +153,45 @@ public class PlayerMovementWithClimb : MonoBehaviour
         isClimbing = false;
         rb.useGravity = true;
     }
+
+    void CheckGround()
+    {
+        isGrounded = Physics.Raycast(
+            transform.position,
+            Vector3.down,
+            groundCheckDistance,
+            groundLayer
+        );
+    }
+
+    void JumpUpdate()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
+    }
+
+    void WallJumpCheck()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            // exit climb
+            isClimbing = false;
+            rb.useGravity = true;
+
+            // clear old velocity
+            rb.velocity = Vector3.zero;
+
+            // jump away from wall + up
+            Vector3 jumpDir = (-lastWallNormal * wallJumpPushForce) 
+                            + (Vector3.up * wallJumpUpForce);
+
+            rb.AddForce(jumpDir, ForceMode.Impulse);
+        }
+    }
+
+
+
 }
