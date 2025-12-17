@@ -33,7 +33,7 @@ public class SpiderDiner : MonoBehaviour
             rt.pivot = new Vector2(1, 1);
 
             // Position from top-right corner
-            rt.anchoredPosition = new Vector2(-i * spacing, 0);
+            rt.anchoredPosition = new Vector2(i * spacing, 0);
 
             healthList.Add(heart);
         }
