@@ -4,15 +4,37 @@ using UnityEngine;
 
 public class flyCollect : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public int value = 1;
+    float startY;
+
     void Start()
     {
-        
+        startY = transform.position.y;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        transform.position = new Vector3(
+            transform.position.x,
+            startY + Mathf.Sin(Time.time * 2f) * 0.25f,
+            transform.position.z
+        );
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        // Check if the player touched it
+        if (other.CompareTag("Player"))
+        {
+            // Notify player or game manager
+            SpiderDiner player = other.GetComponent<SpiderDiner>();
+            if (player != null)
+            {
+                player.CollectItem(value);
+            }
+
+            // Destroy collectible
+            Destroy(gameObject);
+        }
     }
 }

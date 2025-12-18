@@ -48,4 +48,12 @@ public class SpiderDiner : MonoBehaviour
         healthList.RemoveAt(healthList.Count - 1);
         Destroy(heart);
     }
+
+    public int collectedCount = 0;
+
+    public void CollectItem(int amount)
+    {
+        collectedCount += amount;
+        Debug.Log("Collected: " + collectedCount);
+    }
 }
