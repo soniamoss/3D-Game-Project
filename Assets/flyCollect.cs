@@ -52,3 +52,5 @@ public class flyCollect : MonoBehaviour
         Destroy(gameObject);
     }
 }
+
+
