@@ -4,28 +4,29 @@ using UnityEngine;
 
 public class flyCollect : MonoBehaviour
 {
+    //Add the values for fly counter and starting values
     private SpiderDiner gameManager;
-    public int value = 1;   // how many hearts this fly gives (if you want healing)
+    public int value = 1;
     float startY;
 
+    //Starting here we should be able to collect the flies from arounf the map
     void Start()
     {
-        // Find the SpiderDiner manager in the scene (health + flies UI)
         gameManager = FindObjectOfType<SpiderDiner>();
 
-        // Tell SpiderDiner that this fly exists
+        //This shows that the fly exists
         if (gameManager != null)
         {
             gameManager.RegisterFly();
         }
 
-        // Remember starting height for bobbing
+        //Remember starting height for bobbing
         startY = transform.position.y;
     }
 
     void Update()
     {
-        // Simple bobbing animation
+        //Simple bobbing up and down animation
         transform.position = new Vector3(
             transform.position.x,
             startY + Mathf.Sin(Time.time * 2f) * 0.25f,
@@ -35,22 +36,22 @@ public class flyCollect : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        // Only the spider (player) can collect this
+        //Only the spider can collect and interact with the fly
         if (!other.CompareTag("Player")) return;
 
+        //Show fly collection and health gain
         if (gameManager != null)
         {
-            // Count this fly as collected (updates UI + win check)
             gameManager.FlyCollected();
-
-            // If flies should give health, keep this:
+          
             gameManager.GainHealth(value);
-            // If you don't want flies to give health, delete the line above.
+
         }
 
-        // Remove fly from the scene
+        //remove fly from the scene
         Destroy(gameObject);
     }
 }
+
 
 
