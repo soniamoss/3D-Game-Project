@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class ShoeFall : MonoBehaviour
+public class shoeDrop : MonoBehaviour
 {
     public float fallDistance = 4.35f;
     public float fallSpeed = 1f;
