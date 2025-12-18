@@ -1,70 +1,110 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-public class ShoeDropSpawner : MonoBehaviour
+public class ShoeSpawner : MonoBehaviour
 {
-    [Header("Shoe Prefabs")]
-    public GameObject[] shoePrefabs;
+    [Header("Prefab")]
+    public GameObject shoePrefab;
 
-    [Header("Spawn Timing")]
-    public float startSpawnDelay = 2f;
-    public float minimumSpawnDelay = 0.15f;
-    public float accelerationMultiplier = 0.95f;
+    [Header("Pooling")]
+    public int poolSize = 20;
 
     [Header("Spawn Area")]
-    public Vector3 spawnArea = new Vector3(4f, 0f, 4f);
+    public float spawnHeight = 20f;
+    public float killHeight = -10f;
+    public Vector2 xRange = new Vector2(-10f, 10f);
 
-    [Header("Fall Settings")]
-    public float minFallSpeed = 0.8f;
-    public float maxFallSpeed = 2.5f;
+    [Header("Timing")]
+    public float delayBetweenShoes = 0.5f;
 
-    private float currentSpawnDelay;
+    [Header("Falling Speed")]
+    public float initialFallSpeed = 5f;
+    public float speedIncreasePerSecond = 0.5f;
+    public float maxFallSpeed = 25f;
+
+    private List<GameObject> shoePool = new List<GameObject>();
+    private int currentIndex = 0; // rotation index
+    private GameObject activeShoe;
+    private float elapsedTime;
 
     void Start()
     {
-        currentSpawnDelay = startSpawnDelay;
-        StartCoroutine(SpawnRoutine());
+        // Create fixed pool of shoes
+        for (int i = 0; i < poolSize; i++)
+        {
+            GameObject shoe = Instantiate(shoePrefab);
+            shoe.SetActive(false);
+
+            Rigidbody rb = shoe.GetComponent<Rigidbody>();
+            if (rb == null)
+            {
+                rb = shoe.AddComponent<Rigidbody>();
+            }
+
+            rb.useGravity = false; // we will control velocity manually
+            shoePool.Add(shoe);
+        }
+
+        StartCoroutine(ShoeLoop());
     }
 
-    IEnumerator SpawnRoutine()
+    IEnumerator ShoeLoop()
     {
         while (true)
         {
+            // Wait until no active shoe
+            while (activeShoe != null)
+            {
+                // Manually move the shoe downward
+                Rigidbody rb = activeShoe.GetComponent<Rigidbody>();
+                float fallSpeed = Mathf.Min(
+                    initialFallSpeed + elapsedTime * speedIncreasePerSecond,
+                    maxFallSpeed
+                );
+                rb.velocity = Vector3.down * fallSpeed;
+
+                // Check for killHeight
+                if (activeShoe.transform.position.y <= killHeight)
+                {
+                    RecycleShoe();
+                }
+
+                yield return null;
+            }
+
+            // Optional delay
+            yield return new WaitForSeconds(delayBetweenShoes);
+
             SpawnShoe();
-
-            yield return new WaitForSeconds(currentSpawnDelay);
-
-            // Speed up over time
-            currentSpawnDelay *= accelerationMultiplier;
-            currentSpawnDelay = Mathf.Max(currentSpawnDelay, minimumSpawnDelay);
         }
     }
 
     void SpawnShoe()
     {
-        if (shoePrefabs.Length == 0) return;
+        activeShoe = shoePool[currentIndex];
+        currentIndex = (currentIndex + 1) % poolSize;
 
-        GameObject prefab = shoePrefabs[Random.Range(0, shoePrefabs.Length)];
+        float randomX = Random.Range(xRange.x, xRange.y);
 
-        Vector3 randomOffset = new Vector3(
-            Random.Range(-spawnArea.x, spawnArea.x),
-            spawnArea.y,
-            Random.Range(-spawnArea.z, spawnArea.z)
-        );
+        activeShoe.transform.position = new Vector3(randomX, spawnHeight, 0f);
+        activeShoe.transform.rotation = Quaternion.identity;
+        activeShoe.SetActive(true);
 
-        GameObject shoe = Instantiate(
-            prefab,
-            transform.position + randomOffset,
-            Random.rotation
-        );
+        // Reset velocity
+        Rigidbody rb = activeShoe.GetComponent<Rigidbody>();
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+    }
 
-        // Randomize fall behavior
-        ShoeFall fall = shoe.GetComponent<ShoeFall>();
-        if (fall != null)
-        {
-            fall.fallSpeed = Random.Range(minFallSpeed, maxFallSpeed);
-            fall.startDelay = Random.Range(0f, 0.3f);
-        }
+    void RecycleShoe()
+    {
+        activeShoe.SetActive(false);
+        activeShoe = null;
+    }
+
+    void Update()
+    {
+        elapsedTime += Time.deltaTime;
     }
 }
-
