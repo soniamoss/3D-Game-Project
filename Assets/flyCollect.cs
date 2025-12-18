@@ -4,11 +4,17 @@ using UnityEngine;
 
 public class flyCollect : MonoBehaviour
 {
+    private SpiderDiner gameManager;
     public int value = 1;
     float startY;
 
     void Start()
     {
+        gameManager = FindObjectOfType<SpiderDiner>();
+        if (gameManager != null)
+        {
+            gameManager.RegisterFly();
+        }
         startY = transform.position.y;
     }
 
@@ -23,18 +29,14 @@ public class flyCollect : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        // Check if the player touched it
-        if (other.CompareTag("Player"))
-        {
-            // Notify player or game manager
-            SpiderDiner player = other.GetComponent<SpiderDiner>();
-            if (player != null)
-            {
-                player.GainHealth(1);
-            }
+        if (!other.CompareTag("Player")) return;
 
-            // Destroy collectible
-            Destroy(gameObject);
+        if (gameManager != null)
+        {
+            gameManager.FlyCollected();
+            gameManager.GainHealth(1); // if flies give life
         }
+
+        Destroy(gameObject);
     }
 }

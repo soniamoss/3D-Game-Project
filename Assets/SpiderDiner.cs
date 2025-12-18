@@ -13,6 +13,10 @@ public class SpiderDiner : MonoBehaviour
     public float spacing = 50f;
 
     private List<GameObject> healthList = new List<GameObject>();
+    
+    [Header("Win Condition")]
+    public int totalFlies;
+    private int collectedFlies = 0;
 
     void Start()
     {
@@ -81,5 +85,31 @@ public class SpiderDiner : MonoBehaviour
             healthList.Add(heart);
         }
     }
+
+    // keeping track of flies
+    public void RegisterFly()
+    {
+        totalFlies++;
+    }
+
+    public void FlyCollected()
+    {
+        collectedFlies++;
+
+        if (collectedFlies >= totalFlies)
+        {
+            WinGame();
+        }
+    }
+
+    void WinGame()
+    {
+        Debug.Log("YOU WIN!");
+
+        // Optional:
+        Time.timeScale = 0f; // pause game
+        // show win UI here
+    }
+
 
 }
