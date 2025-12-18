@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerMovementWithClimb : MonoBehaviour
+public class MovementWithClimb : MonoBehaviour
 {
     [Header("Movement")]
     public float moveSpeed = 100f;
@@ -10,6 +10,7 @@ public class PlayerMovementWithClimb : MonoBehaviour
     [Header("Climbing")]
     public float wallCheckDistance = 1f;
     public LayerMask climbableLayer;
+    private Quaternion targetRotation;
 
     [Header("Jumping")]
     public float jumpForce = 7f;

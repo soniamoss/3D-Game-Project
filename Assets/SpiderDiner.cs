@@ -13,6 +13,10 @@ public class SpiderDiner : MonoBehaviour
     public float spacing = 50f;
 
     private List<GameObject> healthList = new List<GameObject>();
+    
+    [Header("Win Condition")]
+    public int totalFlies;
+    private int collectedFlies = 0;
 
     void Start()
     {
@@ -48,4 +52,64 @@ public class SpiderDiner : MonoBehaviour
         healthList.RemoveAt(healthList.Count - 1);
         Destroy(heart);
     }
+
+    public int collectedCount = 0;
+
+    public void CollectItem(int amount)
+    {
+        collectedCount += amount;
+        Debug.Log("Collected: " + collectedCount);
+    }
+
+    public void GainHealth(int amount = 1)
+    {
+        for (int i = 0; i < amount; i++)
+        {
+            // Don't exceed max lives
+            if (healthList.Count >= maxNumLives)
+                return;
+
+            GameObject heart = Instantiate(healthPrefab, transform);
+
+            RectTransform rt = heart.GetComponent<RectTransform>();
+
+            // Anchor to top-right
+            rt.anchorMin = new Vector2(1, 1);
+            rt.anchorMax = new Vector2(1, 1);
+            rt.pivot = new Vector2(1, 1);
+
+            // Position new heart after existing ones
+            int index = healthList.Count;
+            rt.anchoredPosition = new Vector2(index * spacing, 0);
+
+            healthList.Add(heart);
+        }
+    }
+
+    // keeping track of flies
+    public void RegisterFly()
+    {
+        totalFlies++;
+    }
+
+    public void FlyCollected()
+    {
+        collectedFlies++;
+
+        if (collectedFlies >= totalFlies)
+        {
+            WinGame();
+        }
+    }
+
+    void WinGame()
+    {
+        Debug.Log("YOU WIN!");
+
+        // Optional:
+        Time.timeScale = 0f; // pause game
+        // show win UI here
+    }
+
+
 }
