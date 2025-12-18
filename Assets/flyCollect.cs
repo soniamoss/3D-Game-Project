@@ -30,7 +30,7 @@ public class flyCollect : MonoBehaviour
             SpiderDiner player = other.GetComponent<SpiderDiner>();
             if (player != null)
             {
-                player.CollectItem(value);
+                player.GainHealth(1);
             }
 
             // Destroy collectible
