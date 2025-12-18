@@ -2,12 +2,12 @@ Game Name: Spider Diner
 
 Group Members: Amelia Grevin, Dylan Murphy, Sonia Mossalaei
 
-Current Target for Game: Play as a spider that is trying to survive in a house and trying to reach a final goal. You avoid obstacles along the way, and when you reach the goal you win the game. You will be able to climb up walls and furniture like a real life spider.
+Current Target for Game: Play as a spider that is trying catch flies in order to stay alive. There are shoes that have fallen down and you want to avoid those as they will kill you and make you lose a life. You can climb up walls and furnitures like a real life spider.
 
 Goals:
 
-Amelia - 3D rendering, set up of the camera and assets 
+Amelia - 3D rendering, set up of the camera and assets, shoe obstacles 
 
-Sonia - game environment, menus
+Sonia - game environment, menus, game play
 
-Dylan - Figuring out player movement (climbing up walls)
+Dylan - Figuring out player movement (climbing up walls), flies 
