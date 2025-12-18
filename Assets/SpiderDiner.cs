@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;   // Needed for Text UI
-using TMPro;
+using TMPro;   // for TextMeshProUGUI
 
 public class SpiderDiner : MonoBehaviour
 {
@@ -14,18 +13,25 @@ public class SpiderDiner : MonoBehaviour
     public float spacing = 50f;
 
     private List<GameObject> healthList = new List<GameObject>();
-
+    
     [Header("Win Condition")]
-    public int totalFlies;          // how many flies exist in this level
+    public int totalFlies;          // how many flies exist in this level (filled by RegisterFly)
     private int collectedFlies = 0;
 
     [Header("Fly UI")]
-    public TextMeshProUGUI fliesText;
+    public TextMeshProUGUI fliesText;   // TMP text that shows "Flies Left: X"
+
+    [Header("Win Screen")]
+    public GameObject winScreen;        // Panel that appears when you win
 
     void Start()
     {
         CreateHealthBar();
-        UpdateFlyUI();              // make sure UI starts in correct state
+        UpdateFlyUI();
+
+        // make sure win screen starts hidden
+        if (winScreen != null)
+            winScreen.SetActive(false);
     }
 
     void CreateHealthBar()
@@ -87,13 +93,13 @@ public class SpiderDiner : MonoBehaviour
     public void RegisterFly()
     {
         totalFlies++;
-        UpdateFlyUI();          // update when a new fly is registered
+        UpdateFlyUI();
     }
 
     public void FlyCollected()
     {
         collectedFlies++;
-        UpdateFlyUI();          // update when a fly is collected
+        UpdateFlyUI();
 
         if (collectedFlies >= totalFlies && totalFlies > 0)
         {
@@ -114,9 +120,12 @@ public class SpiderDiner : MonoBehaviour
     {
         Debug.Log("YOU WIN!");
 
-        // Optional:
-        Time.timeScale = 0f; // pause game
-        // show win UI here (panel, button to main menu, etc.)
+        // Pause the game
+        Time.timeScale = 0f;
+
+        // Show the win screen panel
+        if (winScreen != null)
+            winScreen.SetActive(true);
     }
 }
 
