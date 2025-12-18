@@ -43,7 +43,7 @@ public class SpiderDiner : MonoBehaviour
         }
     }
 
-    // Call this when player takes damage
+    // when player takes damage from shoe
     public void LoseHealth()
     {
         if (healthList.Count == 0) return;
@@ -51,14 +51,6 @@ public class SpiderDiner : MonoBehaviour
         GameObject heart = healthList[healthList.Count - 1];
         healthList.RemoveAt(healthList.Count - 1);
         Destroy(heart);
-    }
-
-    public int collectedCount = 0;
-
-    public void CollectItem(int amount)
-    {
-        collectedCount += amount;
-        Debug.Log("Collected: " + collectedCount);
     }
 
     public void GainHealth(int amount = 1)
