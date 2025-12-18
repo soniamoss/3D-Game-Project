@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerMovementWithClimb : MonoBehaviour
+public class MovementWithClimb : MonoBehaviour
 {
     [Header("Movement")]
     public float moveSpeed = 100f;
@@ -10,6 +10,7 @@ public class PlayerMovementWithClimb : MonoBehaviour
     [Header("Climbing")]
     public float wallCheckDistance = 1f;
     public LayerMask climbableLayer;
+    private Quaternion targetRotation;
 
     [Header("Jumping")]
     public float jumpForce = 7f;
@@ -21,11 +22,8 @@ public class PlayerMovementWithClimb : MonoBehaviour
     public float wallJumpUpForce = 7f;
     public float wallJumpPushForce = 5f;
 
-
-
     [Header("Camera")]
     public Transform mainCamera;
-
     private Rigidbody rb;
     private bool isClimbing = false;
     private Vector3 lastWallNormal;
@@ -40,6 +38,7 @@ public class PlayerMovementWithClimb : MonoBehaviour
     {
         GetMovementInput();
 
+        // check if player is climbing
         if (isClimbing)
         {
             ClimbUpdate();
@@ -67,7 +66,7 @@ public class PlayerMovementWithClimb : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftArrow)) h = -1f;
         if (Input.GetKey(KeyCode.RightArrow)) h = 1f;
 
-        // Get camera forward/right but flatten Y
+        // get camera forward/right but flatten Y
         Vector3 camForward = mainCamera.forward;
         camForward.y = 0f;
         camForward.Normalize();
@@ -76,10 +75,11 @@ public class PlayerMovementWithClimb : MonoBehaviour
         camRight.y = 0f;
         camRight.Normalize();
 
-        // Combine into movement direction
+        // gombine into movement direction
         moveDir = (camForward * v + camRight * h).normalized;
     }
 
+    // running around on the ground
     void GroundMoveUpdate()
     {
         Vector3 horizontalVelocity = moveDir * moveSpeed;
@@ -101,18 +101,21 @@ public class PlayerMovementWithClimb : MonoBehaviour
     }
 
 
+    // transition from running on ground to climbing wall
     void DetectWallForClimbing()
     {
         if (moveDir == Vector3.zero) return;
 
         RaycastHit hit;
 
+        // beging wall climbing mechanics
         if (Physics.Raycast(transform.position, moveDir, out hit, wallCheckDistance, climbableLayer))
         {
             StartClimbing(hit.normal);
         }
     }
 
+    // beginning of wall climb
     void StartClimbing(Vector3 wallNormal)
     {
         isClimbing = true;
@@ -125,6 +128,7 @@ public class PlayerMovementWithClimb : MonoBehaviour
         transform.rotation = Quaternion.LookRotation(-wallNormal);
     }
 
+    // during climbing movement
     void ClimbUpdate()
     {
         // If wall is gone, stop climbing
@@ -148,12 +152,14 @@ public class PlayerMovementWithClimb : MonoBehaviour
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, Time.deltaTime * 10f);
     }
 
+    // end of climbing movement
     void StopClimbing()
     {
         isClimbing = false;
         rb.useGravity = true;
     }
 
+    // check if player is in contact with the ground layer
     void CheckGround()
     {
         isGrounded = Physics.Raycast(
@@ -164,6 +170,7 @@ public class PlayerMovementWithClimb : MonoBehaviour
         );
     }
 
+    // jumping mechanic
     void JumpUpdate()
     {
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
@@ -173,6 +180,7 @@ public class PlayerMovementWithClimb : MonoBehaviour
         }
     }
 
+    // ability to jump off of a wall while climbing it
     void WallJumpCheck()
     {
         if (Input.GetKeyDown(KeyCode.Space))
@@ -185,8 +193,7 @@ public class PlayerMovementWithClimb : MonoBehaviour
             rb.velocity = Vector3.zero;
 
             // jump away from wall + up
-            Vector3 jumpDir = (-lastWallNormal * wallJumpPushForce) 
-                            + (Vector3.up * wallJumpUpForce);
+            Vector3 jumpDir = (-lastWallNormal * wallJumpPushForce) + (Vector3.up * wallJumpUpForce);
 
             rb.AddForce(jumpDir, ForceMode.Impulse);
         }
