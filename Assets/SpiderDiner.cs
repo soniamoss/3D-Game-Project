@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;   // for TextMeshProUGUI
+using TMPro;
 
 public class SpiderDiner : MonoBehaviour
 {
+    //Adding in health to increase and decrease health counter(hearts)
     [Header("Health Settings")]
     public GameObject healthPrefab;
     public int maxNumLives = 3;
@@ -15,21 +16,27 @@ public class SpiderDiner : MonoBehaviour
     private List<GameObject> healthList = new List<GameObject>();
     
     [Header("Win Condition")]
-    public int totalFlies;          // how many flies exist in this level (filled by RegisterFly)
+
+    //Use total flies for fly count down(reaching 0 ends game)
+    public int totalFlies;
     private int collectedFlies = 0;
 
     [Header("Fly UI")]
-    public TextMeshProUGUI fliesText;   // TMP text that shows "Flies Left: X"
+
+    //Text that adds the fly count
+    public TextMeshProUGUI fliesText;
+
+    //Add in a win screen for the end(all flies collected)
 
     [Header("Win Screen")]
-    public GameObject winScreen;        // Panel that appears when you win
+    public GameObject winScreen;
 
     void Start()
     {
         CreateHealthBar();
         UpdateFlyUI();
 
-        // make sure win screen starts hidden
+        //make sure win screen starts hidden
         if (winScreen != null)
             winScreen.SetActive(false);
     }
@@ -42,19 +49,19 @@ public class SpiderDiner : MonoBehaviour
 
             RectTransform rt = heart.GetComponent<RectTransform>();
 
-            // Anchor to top-right
+            //Anchor to top-right
             rt.anchorMin = new Vector2(1, 1);
             rt.anchorMax = new Vector2(1, 1);
             rt.pivot = new Vector2(1, 1);
 
-            // Position from top-right corner
+            //Position from top-right corner
             rt.anchoredPosition = new Vector2(i * spacing, 0);
 
             healthList.Add(heart);
         }
     }
 
-    // when player takes damage from shoe
+    //when player takes damage from shoe
     public void LoseHealth()
     {
         if (healthList.Count == 0) return;
@@ -68,7 +75,7 @@ public class SpiderDiner : MonoBehaviour
     {
         for (int i = 0; i < amount; i++)
         {
-            // Don't exceed max lives
+            //Make sure maxlives is set to max of 3
             if (healthList.Count >= maxNumLives)
                 return;
 
@@ -76,12 +83,12 @@ public class SpiderDiner : MonoBehaviour
 
             RectTransform rt = heart.GetComponent<RectTransform>();
 
-            // Anchor to top-right
+            //Anchor to top-right
             rt.anchorMin = new Vector2(1, 1);
             rt.anchorMax = new Vector2(1, 1);
             rt.pivot = new Vector2(1, 1);
 
-            // Position new heart after existing ones
+            //Add new heart and position it based on which life we are on
             int index = healthList.Count;
             rt.anchoredPosition = new Vector2(index * spacing, 0);
 
@@ -89,7 +96,7 @@ public class SpiderDiner : MonoBehaviour
         }
     }
 
-    // keeping track of flies
+    //Use this as a fly counter for flies consumed
     public void RegisterFly()
     {
         totalFlies++;
@@ -107,6 +114,7 @@ public class SpiderDiner : MonoBehaviour
         }
     }
 
+    //Update the text to show accurate num of flies left
     void UpdateFlyUI()
     {
         if (fliesText != null)
@@ -116,17 +124,21 @@ public class SpiderDiner : MonoBehaviour
         }
     }
 
+    //Run this if all the flies are collected to show winscreen
     void WinGame()
     {
         Debug.Log("YOU WIN!");
 
-        // Pause the game
+        //Pause the game
         Time.timeScale = 0f;
 
-        // Show the win screen panel
+        //Show the win screen panel
         if (winScreen != null)
             winScreen.SetActive(true);
     }
 }
+
+
+
 
 
