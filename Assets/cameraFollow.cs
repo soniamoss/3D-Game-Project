@@ -2,7 +2,10 @@ using UnityEngine;
 
 public class cameraFollow : MonoBehaviour
 {
-    public Transform target; // the player
+    //Set the target as our spider
+    public Transform target;
+
+    //Set offset and speeed values for the camera location and movement
     public Vector3 offset = new Vector3(0f, 3.5f, -8f);
     public float followSpeed = 10f;
     public float rotateSpeed = 10f;
@@ -11,11 +14,11 @@ public class cameraFollow : MonoBehaviour
     {
         if (target == null) return;
 
-        // position behind the player based on the player’s rotation
+        //positioning of the camera
         Vector3 desiredPosition = target.TransformPoint(offset);
         transform.position = Vector3.Lerp(transform.position, desiredPosition, followSpeed * Time.deltaTime);
 
-        // rotate camera to look where the player is looking
+        //rotate the camera depending on the rotations of the spider
         Quaternion targetRotation = Quaternion.LookRotation(target.forward, Vector3.up);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotateSpeed * Time.deltaTime);
     }
